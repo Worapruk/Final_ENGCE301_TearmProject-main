@@ -56,78 +56,10 @@ This is our Solution for the Final LAB in ENGCE301 Class team8
 <br>
 
 ## 🔄 Activity Flow Diagram
+<p align="center">
+  <img src="Document/image/active.png" alt="active" width="520">
+</p>
 
-```mermaid
-stateDiagram-v2
-    [*] --> ApplicationClosed
-    ApplicationClosed --> LoginScreen: เปิดแอปพลิเคชัน
-    
-    state LoginScreen {
-        [*] --> CredentialInput
-        CredentialInput --> ValidationProcess: กรอกข้อมูล
-        ValidationProcess --> ErrorState: ข้อมูลไม่ถูกต้อง
-        ErrorState --> CredentialInput: แสดงข้อความผิดพลาด
-        ValidationProcess --> TokenGeneration: ข้อมูลถูกต้อง
-        TokenGeneration --> WebSocketConnection: บันทึก Token
-    }
-    
-    LoginScreen --> Dashboard: เชื่อมต่อ WebSocket สำเร็จ
-    
-    state Dashboard {
-        [*] --> IdleState
-        
-        state StatusManagement {
-            [*] --> StatusSelection
-            StatusSelection --> APIRequest: เลือกสถานะใหม่
-            APIRequest --> DatabaseUpdate: ส่งคำขอไปยัง Endpoint API
-            DatabaseUpdate --> HistoryRecording: อัปเดตฐานข้อมูล SQL
-            HistoryRecording --> WebSocketNotification: บันทึกประวัติใน Parse Server
-            WebSocketNotification --> [*]: แจ้งเตือนผ่าน WebSocket
-        }
-        
-        state MessagingProcess {
-            [*] --> RecipientInput
-            RecipientInput --> MessageInput: กรอกรหัสเอเจนต์ปลายทาง
-            MessageInput --> MessageSending: พิมพ์ข้อความ
-            MessageSending --> MessageStorage: ส่งผ่าน Endpoint API
-            MessageStorage --> WebSocketForwarding: บันทึกใน Parse Server
-            WebSocketForwarding --> NotificationDelivery: ส่งต่อผ่าน WebSocket
-            NotificationDelivery --> [*]: แสดงการแจ้งเตือน
-        }
-        
-        state LogoutProcess {
-            [*] --> LogoutRequest
-            LogoutRequest --> StatusUpdate: ส่งคำขอออกจากระบบ
-            StatusUpdate --> LogoutHistory: อัปเดตสถานะเป็นออกจากระบบ
-            LogoutHistory --> ConnectionTermination: บันทึกประวัติการออกจากระบบ
-            ConnectionTermination --> SessionClosure: ตัดการเชื่อมต่อ WebSocket
-            SessionClosure --> [*]: ปิด Session
-        }
-        
-        IdleState --> StatusManagement: เลือกเปลี่ยนสถานะ
-        StatusManagement --> IdleState
-        
-        IdleState --> MessagingProcess: เลือกส่งข้อความ
-        MessagingProcess --> IdleState
-        
-        IdleState --> LogoutProcess: เลือกออกจากระบบ
-    }
-    
-    Dashboard --> LoginScreen: กลับสู่หน้าล็อกอิน
-    LoginScreen --> ApplicationClosed: ปิดแอปพลิเคชัน
-    
-    [*] --> AdminClosed
-    AdminClosed --> AdminDashboard: เปิดแอปพลิเคชัน Wallboard
-    
-    state AdminDashboard {
-        [*] --> StatusViewing
-        StatusViewing --> LoginHistoryViewing: ดูข้อมูลสถานะเอเจนต์
-        LoginHistoryViewing --> StatusHistoryViewing: ตรวจสอบประวัติการเข้าใช้งาน
-        StatusHistoryViewing --> MessageHistoryViewing: ตรวจสอบประวัติการเปลี่ยนสถานะ
-        MessageHistoryViewing --> [*]: ตรวจสอบประวัติการส่งข้อความ
-    }
-    
-    AdminDashboard --> AdminClosed: ปิดแอปพลิเคชัน
 ```
 <br>
 
